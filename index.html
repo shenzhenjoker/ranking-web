@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>YCS World Cup - CPU Competition Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #000 url('background_cyberpunk.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #0ff;
+      font-family: 'Orbitron', sans-serif;
+    }
+    table {
+      width: 90%;
+      margin: 2em auto;
+      border-collapse: collapse;
+      background: rgba(0, 0, 0, 0.85);
+    }
+    th, td {
+      border: 1px solid #0ff;
+      padding: 10px;
+      text-align: center;
+      color: #0ff;
+    }
+    td[contenteditable] {
+      background: #fff;
+      color: #000;
+    }
+    .controls {
+      text-align: center;
+      margin-bottom: 2em;
+    }
+    .controls button, .controls select {
+      background: transparent;
+      color: #0ff;
+      border: 2px solid #0ff;
+      padding: 0.5em 1em;
+      margin: 0.5em;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center;color:#f44;">YCS World Cup</h1>
+  <h2 style="text-align:center;">CPU Competition Leaderboard</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>RANK</th>
+        <th>NAT</th>
+        <th>NAME</th>
+        <th>ID</th>
+        <th>TIME</th>
+      </tr>
+    </thead>
+    <tbody id="ranking-body"></tbody>
+  </table>
+  <div class="controls">
+    <select id="lang-select" onchange="switchLang()">
+      <option value="en">English</option>
+      <option value="zh">中文</option>
+    </select>
+    <button onclick="addNewRow()">Add Player</button>
+    <button onclick="clearTable()">Clear Table</button>
+    <button onclick="sortByTime()">Sort by Time</button>
+    <button onclick="downloadCSV()">Export to CSV</button>
+  </div>
+  <script>
+    const nationMap = {'中国':'CHN','印度':'IND','巴西':'BRA'};
+    let rankingData = [{nation:'CHN', name:'李雷', id:'001', time:'3:45'}];
+
+    function renderTable(){
+      const tbody = document.getElementById('ranking-body');
+      tbody.innerHTML = '';
+      rankingData.forEach((p, i) => {
+        const options = Object.entries(nationMap).map(([n,c]) =>
+          `<option value="${c}" ${c===p.nation?'selected':''}>${n} (${c})</option>`).join('');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${i+1}</td>
+          <td><select onchange="handleSelectChange(this, ${i})">${options}</select></td>
+          <td contenteditable oninput="rankingData[${i}].name=this.textContent">${p.name}</td>
+          <td contenteditable oninput="rankingData[${i}].id=this.textContent">${p.id}</td>
+          <td contenteditable oninput="rankingData[${i}].time=this.textContent; delayedValidate(this, ${i})">${p.time}</td>`;
+        tbody.appendChild(row);
+      });
+    }
+
+    function delayedValidate(cell, i){
+      setTimeout(() => {
+        const val = cell.textContent.trim();
+        const valid = /^\d{1,2}:\d{2}$/.test(val);
+        if(!valid){
+          alert('格式不正确，请输入 分钟:秒数（例如 3:45）');
+          cell.textContent = '';
+          rankingData[i].time = '';
+        }
+      }, 0);
+    }
+
+    function handleSelectChange(sel, i){
+      rankingData[i].nation = sel.value;
+    }
+
+    function addNewRow(){
+      rankingData.push({nation:'', name:'', id:'', time:''});
+      renderTable();
+    }
+
+    function clearTable(){
+      rankingData = [];
+      renderTable();
+    }
+
+    function sortByTime(){
+      rankingData.sort((a,b)=>toSec(a.time)-toSec(b.time));
+      renderTable();
+    }
+
+    function toSec(t){
+      const [m,s]=(t||'0:00').split(':').map(Number);
+      return (m||0)*60+(s||0);
+    }
+
+    function downloadCSV(){
+      const csv = 'Rank,Nation,Name,ID,Time\n' + rankingData.map((p,i)=>
+        `${i+1},${p.nation},${p.name},${p.id},${p.time}`).join('\n');
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+      link.download = 'ranking.csv';
+      link.click();
+    }
+
+    function switchLang(){}
+    renderTable();
+  </script>
+</body>
+</html>
