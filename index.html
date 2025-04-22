@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YCS World Cup - CPU Competition Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #000;
+      --text-color: #0ff;
+      --table-bg: rgba(0, 0, 0, 0.85);
+      --cell-bg: rgba(50, 50, 50, 0.5);
+      --highlight-text: #000;
+    }
+
+    body.light-theme {
+      --bg-color: #fff;
+      --text-color: #000;
+      --table-bg: #f0f0f0;
+      --cell-bg: #e0e0e0;
+      --highlight-text: #000;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: all 0.4s ease-in-out;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 10px 10px;
+      border-bottom: 2px solid var(--text-color);
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 36px;
+      color: #f44;
+      margin: 0;
+    }
+
+    h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      color: var(--text-color);
+      margin-top: 10px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 16px;
+      background-color: var(--table-bg);
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .controls button, .controls select {
+      padding: 10px 20px;
+      border: 2px solid var(--text-color);
+      background-color: transparent;
+      color: var(--text-color);
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .controls button:hover, .controls select:hover {
+      background-color: var(--text-color);
+      color: var(--bg-color);
+    }
+
+    table {
+      width: 90%;
+      margin: 40px auto 80px;
+      border-collapse: collapse;
+      background-color: var(--table-bg);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      text-align: center;
+      padding: 10px;
+      color: var(--text-color);
+      border: 1px solid var(--text-color);
+    }
+
+    td[contenteditable] {
+      background-color: #fff;
+      color: #000;
+    }
+
+    img.flag {
+      width: 24px;
+      height: 16px;
+      margin-right: 6px;
+      vertical-align: middle;
+      border: 1px solid #fff;
+    }
+
+    /* Top 3 styles */
+    tr.gold td {
+      background-color: gold;
+      color: var(--highlight-text);
+      font-weight: bold;
+    }
+
+    tr.silver td {
+      background-color: silver;
+      color: var(--highlight-text);
+      font-weight: bold;
+    }
+
+    tr.bronze td {
+      background-color: #cd7f32;
+      color: var(--highlight-text);
+      font-weight: bold;
+    }
+
+    tr.normal td {
+      background-color: var(--cell-bg);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>YCS World Cup</h1>
+    <h2>CPU Competition Leaderboard</h2>
+  </header>
+
+  <div class="controls">
+    <button onclick="toggleTheme()">Toggle Dark/Light Mode</button>
+    <button onclick="addNewRow()">Add Player</button>
+    <button onclick="sortByTime()">Sort by Time</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Nation</th>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody id="ranking-body"></tbody>
+  </table>
+
+  <script>
+    let isDark = true;
+    let rankingData = [
+      { nation: "CHN", name: "李雷", id: "A01", time: "2:45" },
+      { nation: "IND", name: "Amit", id: "A02", time: "2:49" },
+      { nation: "BRA", name: "Carlos", id: "A03", time: "2:51" },
+      { nation: "RUS", name: "Ivan", id: "A04", time: "3:10" }
+    ];
+
+    function toggleTheme() {
+      document.body.classList.toggle("light-theme");
+    }
+
+    function addNewRow() {
+      rankingData.push({ nation: "", name: "", id: "", time: "" });
+      renderTable();
+    }
+
+    function sortByTime() {
+      rankingData.sort((a, b) => toSeconds(a.time) - toSeconds(b.time));
+      renderTable();
+    }
+
+    function toSeconds(t) {
+      const [min, sec] = t.split(':').map(Number);
+      return (min || 0) * 60 + (sec || 0);
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("ranking-body");
+      tbody.innerHTML = "";
+      rankingData.forEach((p, i) => {
+        const row = document.createElement("tr");
+        row.className = i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "normal";
+        row.innerHTML = `
+          <td>${i + 1}</td>
+          <td><img src="flags/${p.nation || 'CHN'}.png" class="flag">${p.nation}</td>
+          <td contenteditable>${p.name}</td>
+          <td contenteditable>${p.id}</td>
+          <td contenteditable>${p.time}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    renderTable();
+  </script>
+</body>
+</html>
