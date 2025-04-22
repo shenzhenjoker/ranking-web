@@ -1,0 +1,161 @@
+
+<!-- 这里只示意前部分内容 -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>YCS World Cup Leaderboard</title>
+  <style>
+    body { background-color: #000; color: #0ff; font-family: sans-serif; margin: 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 40px; }
+    th, td { border: 1px solid #0ff; padding: 10px; text-align: center; }
+    tr.gold td { background: gold; color: black; }
+    tr.silver td { background: silver; color: black; }
+    tr.bronze td { background: #cd7f32; color: black; }
+    tr.normal td { background: rgba(255,255,255,0.05); }
+    .controls { position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9); padding: 10px; display: flex; gap: 10px; justify-content: center; }
+    .controls button, .controls select { padding: 10px; font-weight: bold; background: transparent; border: 1px solid #0ff; color: #0ff; }
+    .controls button:hover { background: #0ff; color: #000; }
+    .flag { width: 20px; vertical-align: middle; margin-right: 6px; }
+    @keyframes flash {
+      0% { box-shadow: 0 0 10px yellow; }
+      50% { box-shadow: 0 0 20px white; }
+      100% { box-shadow: 0 0 10px yellow; }
+    }
+    .flash { animation: flash 1.5s ease-in-out; }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center; color:#f44; margin-top:20px;">YCS World Cup</h1>
+  <h2 style="text-align:center; color:#0ff;">CPU Competition Leaderboard</h2>
+
+  <table>
+    <thead>
+      <tr><th>Rank</th><th>Nation</th><th>Name</th><th>ID</th><th>Time</th></tr>
+    </thead>
+    <tbody id="ranking-body"></tbody>
+  </table>
+
+  <div class="controls">
+    <select id="lang-select" onchange="switchLang()">
+      <option value="zh">中文</option>
+      <option value="en">English</option>
+    </select>
+    <button onclick="addRow()">添加选手</button>
+    <button onclick="clearTable()">清空</button>
+    <button onclick="sortTable()">排序</button>
+    <button onclick="downloadCSV()">导出 CSV</button>
+  </div>
+
+  <script>
+    const countries = [('CHN', '中国'), ('IND', '印度'), ('THA', '泰国'), ('MYS', '马来西亚'), ('BGD', '孟加拉国'), ('PAK', '巴基斯坦'), ('IDN', '印度尼西亚'), ('ARE', '阿拉伯联合酋长国'), ('RUS', '俄罗斯'), ('LAO', '老挝'), ('TZA', '坦桑尼亚'), ('DZA', '阿尔及利亚'), ('GIN', '几内亚'), ('CUB', '古巴'), ('BRA', '巴西'), ('SDN', '苏丹'), ('KAZ', '哈萨克斯坦'), ('UZB', '乌兹别克斯坦'), ('GRC', '希腊'), ('VNM', '越南')];
+    let data = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+
+    function toSeconds(t) {
+      const [m, s] = (t || "0:00").split(":").map(Number);
+      return m * 60 + s;
+    }
+
+    function validateTime(cell, i) {
+      setTimeout(() => {
+        const val = cell.textContent.trim();
+        if (!/^\d{1,2}:\d{2}$/.test(val)) {
+          alert("时间格式不正确，应为 分:秒");
+          cell.textContent = '';
+        } else {
+          data[i].time = val;
+          save();
+        }
+      }, 0);
+    }
+
+    function save() {
+      localStorage.setItem('leaderboard', JSON.stringify(data));
+    }
+
+    function render(flash=false) {
+      const body = document.getElementById("ranking-body");
+      body.innerHTML = "";
+      data.forEach((p, i) => {
+        const row = document.createElement("tr");
+        row.className = (i==0 ? "gold flash" : i==1 ? "silver" : i==2 ? "bronze" : "normal");
+        row.innerHTML = `
+          <td>${i+1}</td>
+          <td>
+            <select onchange="data[${i}].nation=this.value; save(); render()">
+              <option value="">--</option>
+              <option value="CHN" ${p.nation==="CHN"?"selected":""}>中国 (CHN)</option>
+<option value="IND" ${p.nation==="IND"?"selected":""}>印度 (IND)</option>
+<option value="THA" ${p.nation==="THA"?"selected":""}>泰国 (THA)</option>
+<option value="MYS" ${p.nation==="MYS"?"selected":""}>马来西亚 (MYS)</option>
+<option value="BGD" ${p.nation==="BGD"?"selected":""}>孟加拉国 (BGD)</option>
+<option value="PAK" ${p.nation==="PAK"?"selected":""}>巴基斯坦 (PAK)</option>
+<option value="IDN" ${p.nation==="IDN"?"selected":""}>印度尼西亚 (IDN)</option>
+<option value="ARE" ${p.nation==="ARE"?"selected":""}>阿拉伯联合酋长国 (ARE)</option>
+<option value="RUS" ${p.nation==="RUS"?"selected":""}>俄罗斯 (RUS)</option>
+<option value="LAO" ${p.nation==="LAO"?"selected":""}>老挝 (LAO)</option>
+<option value="TZA" ${p.nation==="TZA"?"selected":""}>坦桑尼亚 (TZA)</option>
+<option value="DZA" ${p.nation==="DZA"?"selected":""}>阿尔及利亚 (DZA)</option>
+<option value="GIN" ${p.nation==="GIN"?"selected":""}>几内亚 (GIN)</option>
+<option value="CUB" ${p.nation==="CUB"?"selected":""}>古巴 (CUB)</option>
+<option value="BRA" ${p.nation==="BRA"?"selected":""}>巴西 (BRA)</option>
+<option value="SDN" ${p.nation==="SDN"?"selected":""}>苏丹 (SDN)</option>
+<option value="KAZ" ${p.nation==="KAZ"?"selected":""}>哈萨克斯坦 (KAZ)</option>
+<option value="UZB" ${p.nation==="UZB"?"selected":""}>乌兹别克斯坦 (UZB)</option>
+<option value="GRC" ${p.nation==="GRC"?"selected":""}>希腊 (GRC)</option>
+<option value="VNM" ${p.nation==="VNM"?"selected":""}>越南 (VNM)</option>
+            </select>
+            <img src="flags/${p.nation||'CHN'}.png" class="flag">
+          </td>
+          <td contenteditable oninput="data[${i}].name=this.textContent; save()">${p.name||''}</td>
+          <td contenteditable oninput="data[${i}].id=this.textContent; save()">${p.id||''}</td>
+          <td contenteditable onblur="validateTime(this, ${i})">${p.time||''}</td>
+        `;
+        body.appendChild(row);
+      });
+      if (flash) {
+        setTimeout(() => {
+          const top = document.querySelector("tr.gold.flash");
+          if (top) top.classList.remove("flash");
+        }, 1500);
+      }
+    }
+
+    function addRow() {
+      data.push({ nation: "", name: "", id: "", time: "" });
+      render();
+      save();
+    }
+
+    function clearTable() {
+      if (confirm("确定清空全部选手？")) {
+        data = [];
+        render();
+        save();
+      }
+    }
+
+    function sortTable() {
+      data.sort((a,b)=>toSeconds(a.time)-toSeconds(b.time));
+      render(true);
+      save();
+    }
+
+    function downloadCSV() {
+      const rows = [["Rank","Nation","Name","ID","Time"], ...data.map((p,i)=>[i+1,p.nation,p.name,p.id,p.time])];
+      const csv = rows.map(r => r.join(",")).join("\n");
+      const blob = new Blob([csv], {type: 'text/csv'});
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "leaderboard.csv";
+      link.click();
+    }
+
+    function switchLang() {
+      // 可扩展中英切换逻辑
+    }
+
+    render();
+  </script>
+</body>
+</html>
