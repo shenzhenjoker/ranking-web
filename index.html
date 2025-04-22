@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YCS World Cup - CPU Competition Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('background_cyberpunk.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #0ff;
+    }
+    header {
+      text-align: center;
+      padding: 30px 10px 10px;
+      border-bottom: 2px solid #0ff;
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 36px;
+      color: #f44;
+      margin: 0;
+    }
+    h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      color: #0ff;
+      margin-top: 10px;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+    .controls button, .controls select {
+      padding: 10px 20px;
+      border: 2px solid #0ff;
+      background: transparent;
+      color: #0ff;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .controls button:hover, .controls select:hover {
+      background-color: #0ff;
+      color: #000;
+    }
+    table {
+      width: 90%;
+      margin: 30px auto 100px;
+      border-collapse: collapse;
+      background-color: rgba(0, 0, 0, 0.85);
+      box-shadow: 0 0 10px rgba(0,255,255,0.2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: center;
+      line-height: 2.4;
+      vertical-align: middle;
+      color: #0ff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      text-shadow: 0 0 4px rgba(0,255,255,0.6);
+    }
+    th {
+      background-color: #021d2c;
+      font-weight: bold;
+    }
+    td[contenteditable] {
+      background-color: #e6f7ff;
+      color: #111;
+      font-weight: bold;
+      font-size: 17px;
+      font-family: 'Inter', sans-serif;
+    }
+    td[contenteditable]:focus {
+      background-color: #bae7ff;
+    }
+    img.flag {
+      width: 24px;
+      height: 16px;
+      margin-right: 6px;
+      vertical-align: middle;
+      border: 1px solid #fff;
+    }
+    tbody tr:nth-child(1) td { background-color: gold; color: #000; }
+    tbody tr:nth-child(2) td { background-color: silver; color: #000; }
+    tbody tr:nth-child(3) td { background-color: #cd7f32; color: #000; }
+    tbody tr:nth-child(n+4) td { background-color: rgba(50, 50, 50, 0.5); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="title">YCS World Cup</h1>
+    <h2 id="subtitle">CPU Competition Leaderboard</h2>
+  </header>
+  <table>
+    <thead>
+      <tr>
+        <th id="rank-col">RANK</th>
+        <th id="nat-col">NAT</th>
+        <th id="name-col">NAME</th>
+        <th id="id-col">ID</th>
+        <th id="time-col">TIME</th>
+      </tr>
+    </thead>
+    <tbody id="ranking-body"></tbody>
+  </table>
+  <div class="controls">
+    <select id="lang-select" onchange="switchLang()">
+      <option value="en">English</option>
+      <option value="zh">中文</option>
+    </select>
+    <button onclick="addNewRow()">Add Player</button>
+    <button onclick="clearTable()">Clear Table</button>
+    <button onclick="sortByTime()">Sort by Time</button>
+    <button onclick="downloadCSV()">Export to CSV</button>
+  </div>
+  <script>
+    const nationMap = {
+      '中国': 'CHN', '印度': 'IND', '孟加拉': 'BGD', '马来西亚': 'MYS',
+      '阿尔及利亚': 'DZA', '俄罗斯': 'RUS', '巴基斯坦': 'PAK',
+      '几内亚': 'GIN', '印尼': 'IDN', '哈萨克斯坦': 'KAZ',
+      '老挝': 'LAO', '越南': 'VNM', '加纳': 'GHA', '泰国': 'THA',
+      '巴西': 'BRA', '美国': 'USA', '英国': 'GBR'
+    };
+
+    let rankingData = [
+      { nation: "MYS", name: "Anmad Noor", id: "101", time: "3:45" },
+      { nation: "IND", name: "Anan Patel", id: "101", time: "2:38" },
+      { nation: "BGD", name: "Imran Rahman", id: "102", time: "3:37" },
+    ];
+
+    function renderTable() {
+      const tbody = document.getElementById('ranking-body');
+      tbody.innerHTML = '';
+      rankingData.forEach((p, i) => {
+        const code = (p.nation || '').toUpperCase();
+        const flag = code ? `<img class='flag' src='flags/${code}.png'>` : '';
+        const options = Object.entries(nationMap).map(([name, iso]) =>
+          `<option value="${iso}" ${iso === code ? 'selected' : ''}>${name} (${iso})</option>`).join('');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${i + 1}</td>
+          <td><select onchange="handleSelectChange(this, ${i})">
+            <option value="">选择国家</option>
+            ${options}
+          </select> <span>${flag}</span></td>
+          <td contenteditable oninput="rankingData[${i}].name = this.textContent">${p.name || ''}</td>
+          <td contenteditable oninput="rankingData[${i}].id = this.textContent">${p.id || ''}</td>
+          <td contenteditable oninput="rankingData[${i}].time = this.textContent">${p.time || ''}</td>`;
+        tbody.appendChild(row);
+      });
+    }
+
+    function handleSelectChange(select, i) {
+      const code = select.value;
+      rankingData[i].nation = code;
+      const span = select.nextElementSibling;
+      span.innerHTML = code ? `<img class='flag' src='flags/${code}.png'>` : '';
+    }
+
+    function sortByTime() {
+      rankingData.sort((a, b) => toSeconds(a.time) - toSeconds(b.time));
+      renderTable();
+    }
+
+    function toSeconds(time) {
+      const [min, sec] = (time || '0:00').split(':').map(Number);
+      return (min || 0) * 60 + (sec || 0);
+    }
+
+    function addNewRow() {
+      rankingData.push({ nation: '', name: '', id: '', time: '' });
+      renderTable();
+    }
+
+    function clearTable() {
+      rankingData = [];
+      renderTable();
+    }
+
+    function downloadCSV() {
+      const csv = 'Rank,Nation,Name,ID,Time\n' +
+        rankingData.map((p, i) => `${i + 1},${p.nation},${p.name},${p.id},${p.time}`).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'ranking.csv';
+      link.click();
+    }
+
+    function switchLang() {
+      const lang = document.getElementById("lang-select").value;
+      const labels = {
+        en: ["RANK", "NAT", "NAME", "ID", "TIME", "Add Player", "Clear Table", "Sort by Time", "Export to CSV", "CPU Competition Leaderboard"],
+        zh: ["名次", "国籍", "姓名", "编号", "成绩", "添加选手", "清空", "按成绩排序", "导出 CSV", "CPU竞速排行榜"]
+      };
+      const set = labels[lang];
+      document.getElementById("rank-col").innerText = set[0];
+      document.getElementById("nat-col").innerText = set[1];
+      document.getElementById("name-col").innerText = set[2];
+      document.getElementById("id-col").innerText = set[3];
+      document.getElementById("time-col").innerText = set[4];
+      document.querySelectorAll(".controls button")[0].innerText = set[5];
+      document.querySelectorAll(".controls button")[1].innerText = set[6];
+      document.querySelectorAll(".controls button")[2].innerText = set[7];
+      document.querySelectorAll(".controls button")[3].innerText = set[8];
+      document.getElementById("subtitle").innerText = set[9];
+    }
+
+    renderTable();
+  </script>
+</body>
+</html>
