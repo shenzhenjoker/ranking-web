@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YCS World Cup - CPU Competition Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('background_cyberpunk.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #0ff;
+    }
+    header {
+      text-align: center;
+      padding: 30px 10px 10px;
+      border-bottom: 2px solid #0ff;
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 36px;
+      color: #f44;
+      margin: 0;
+    }
+    h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      color: #0ff;
+      margin-top: 10px;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+    .controls button, .controls select {
+      padding: 12px 24px;
+      border: 2px solid #0ff;
+      background: linear-gradient(135deg, #00b3ff, #004c8c);
+      color: #fff;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    .controls button:hover, .controls select:hover {
+      background: linear-gradient(135deg, #004c8c, #00b3ff);
+      color: #000;
+    }
+    table {
+      width: 90%;
+      margin: 30px auto;
+      border-collapse: collapse;
+      background-color: rgba(0, 0, 0, 0.85);
+      box-shadow: 0 0 10px rgba(0,255,255,0.2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: center;
+      line-height: 2.4;
+      vertical-align: middle;
+      color: #0ff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      text-shadow: 0 0 4px rgba(0,255,255,0.6);
+      border: 1px solid #0ff;
+    }
+    th {
+      background-color: #021d2c;
+      font-weight: bold;
+    }
+    td[contenteditable] {
+      background-color: #e6f7ff;
+      color: #111;
+      font-weight: bold;
+      font-size: 17px;
+      font-family: 'Inter', sans-serif;
+    }
+    td[contenteditable]:focus {
+      background-color: #bae7ff;
+    }
+    img.flag {
+      width: 24px;
+      height: 16px;
+      margin-right: 6px;
+      vertical-align: middle;
+      border: 1px solid #fff;
+    }
+    tr:nth-child(1) td { background-color: gold; color: #000; }
+    tr:nth-child(2) td { background-color: silver; color: #000; }
+    tr:nth-child(3) td { background-color: #cd7f32; color: #000; }
+    tr:nth-child(n+4) td { background-color: rgba(50, 50, 50, 0.5); color: white; font-weight: normal; }
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>YCS World Cup</h1>
+    <h2>CPU Competition Leaderboard</h2>
+  </header>
+
+  <div class="controls">
+    <select id="lang-select" onchange="switchLang()">
+      <option value="en">English</option>
+      <option value="zh">中文</option>
+    </select>
+    <button onclick="addNewRow()">Add Player</button>
+    <button onclick="clearTable()">Clear Table</button>
+    <button onclick="sortByTime()">Sort by Time</button>
+    <button onclick="downloadCSV()">Export to CSV</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Rank</th><th>Nation</th><th>Name</th><th>ID</th><th>Time</th></tr>
+    </thead>
+    <tbody id="ranking-body"></tbody>
+  </table>
+
+  <script>
+    let rankingData = JSON.parse(localStorage.getItem('rankingData')) || [
+      { nation: "CHN", name: "李雷", id: "A01", time: "2:45" },
+      { nation: "IND", name: "Amit", id: "A02", time: "2:49" },
+      { nation: "BRA", name: "Carlos", id: "A03", time: "2:51" }
+    ];
+
+    function validateTime(cell, i) {
+      setTimeout(() => {
+        let value = cell.textContent.trim();
+        
+        // If seconds are entered without leading zero, fix it.
+        if (value.includes(":") && value.split(":")[1].length === 1) {
+          value = value.split(":")[0] + ":0" + value.split(":")[1];
+          cell.textContent = value;
+        }
+
+        // Check if the format is valid (minutes:seconds)
+        const isValid = /^\d{1,2}:\d{2}$/.test(value);
+
+        // Ensure the time doesn't exceed 59:59
+        const [min, sec] = value.split(":").map(Number);
+        if (!isValid || min > 59 || sec > 59) {
+          alert('格式不正确，请输入分钟:秒数 的格式，如 3:45，并确保分钟和秒数不超过 59');
+          cell.textContent = '';
+          rankingData[i].time = '';
+        } else {
+          rankingData[i].time = value;
+        }
+        saveToStorage();  // Save to localStorage after modification
+      }, 0);
+    }
+
+    function addNewRow() {
+      rankingData.push({ nation: '', name: '', id: '', time: '' });
+      renderTable();
+      saveToStorage();
+    }
+
+    function clearTable() {
+      rankingData.length = 0;
+      renderTable();
+      saveToStorage();
+    }
+
+    function sortByTime() {
+      rankingData.sort((a, b) => toSeconds(a.time) - toSeconds(b.time));
+      renderTable();
+      saveToStorage();
+    }
+
+    function toSeconds(time) {
+      const [min, sec] = (time || '0:00').split(':').map(Number);
+      return (min || 0) * 60 + (sec || 0);
+    }
+
+    function downloadCSV() {
+      const csv = 'Rank,Nation,Name,ID,Time\n' +
+        rankingData.map((p, i) => `${i + 1},${p.nation},${p.name},${p.id},${p.time}`).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'ranking.csv';
+      link.click();
+    }
+
+    function switchLang() {
+      const lang = document.getElementById("lang-select").value;
+      const labels = {
+        en: ["Rank", "Nation", "Name", "ID", "Time", "Add Player", "Clear Table", "Sort by Time", "Export to CSV"],
+        zh: ["名次", "国籍", "姓名", "编号", "成绩", "添加选手", "清空表格", "按成绩排序", "导出 CSV"]
+      };
+      const set = labels[lang];
+      const ths = document.querySelectorAll('thead th');
+      ths.forEach((th, i) => { if (set[i]) th.innerText = set[i]; });
+      document.querySelectorAll(".controls button")[0].innerText = set[5];
+      document.querySelectorAll(".controls button")[1].innerText = set[6];
+      document.querySelectorAll(".controls button")[2].innerText = set[7];
+      document.querySelectorAll(".controls button")[3].innerText = set[8];
+    }
+
+    function handleNationSelect(select, i) {
+      rankingData[i].nation = select.value;
+      renderTable();
+      saveToStorage();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("ranking-body");
+      tbody.innerHTML = '';
+      rankingData.forEach((p, i) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${i + 1}</td>
+          <td>
+            <select onchange="handleNationSelect(this, ${i})">
+              <option value="">--</option>
+              <option value="CHN" ${p.nation==='CHN'?'selected':''}>中国 (CHN)</option>
+              <option value="IND" ${p.nation==='IND'?'selected':''}>印度 (IND)</option>
+              <option value="BRA" ${p.nation==='BRA'?'selected':''}>巴西 (BRA)</option>
+              <option value="USA" ${p.nation==='USA'?'selected':''}>美国 (USA)</option>
+              <option value="RUS" ${p.nation==='RUS'?'selected':''}>俄罗斯 (RUS)</option>
+            </select>
+            <img src="flags/${p.nation || ''}.png" class="flag">
+          </td>
+          <td contenteditable oninput="rankingData[${i}].name = this.textContent">${p.name || ''}</td>
+          <td contenteditable oninput="rankingData[${i}].id = this.textContent">${p.id || ''}</td>
+          <td contenteditable onblur="validateTime(this, ${i})">${p.time || ''}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function saveToStorage() {
+      localStorage.setItem('rankingData', JSON.stringify(rankingData));
+    }
+
+    renderTable();
+  </script>
+</body>
+</html>
