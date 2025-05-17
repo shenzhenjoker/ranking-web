@@ -1,0 +1,2131 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @media (max-width: 768px) {
+    h1 { font-size: 28px; }
+    h2 { font-size: 16px; }
+    table, th, td {
+      font-size: 12px;
+    }
+    .controls {
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 5px;
+    }
+    .controls button, .controls select {
+      width: 90%;
+      margin: 4px 0;
+    }
+    .table-container {
+      width: 98%;
+      overflow-x: auto;
+    }
+  }
+
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 5px;
+  transition: width 0.3s ease-in-out;
+}
+
+
+<style>
+  .toggle-view {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    border: 2px solid #0ff;
+    padding: 6px 14px;
+    font-weight: bold;
+    color: #0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  .toggle-view:hover {
+    color: #000;
+  }
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+    display: none;
+  }
+  .player-card {
+    border: 2px solid #0ff;
+    border-radius: 12px;
+    padding: 16px;
+    width: 220px;
+    color: #0ff;
+    box-shadow: 0 0 12px rgba(0,255,255,0.2);
+    font-family: 'Orbitron', sans-serif;
+  }
+  .player-card img.flag {
+    width: 36px;
+    height: 24px;
+    margin-bottom: 6px;
+    border: 1px solid #fff;
+  }
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+  <meta charset="UTF-8" />
+  <title>YCS World Cup - CPU Competition Leaderboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cyber-blue: #00ffff;
+      --hud-border: rgba(0, 255, 255, 0.6);
+    }
+
+    body {
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      color: var(--cyber-blue);
+    }
+
+    header {
+      margin-top: 30px;
+      text-align: center;
+      border: 4px double var(--hud-border);
+      padding: 20px 10px;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 15px;
+      box-shadow: 0 0 20px var(--cyber-blue);
+    }
+
+    h1 {
+      font-size: 42px;
+      color: #f44;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: var(--cyber-blue);
+      margin-top: 8px;
+    }
+
+    .table-container {
+      width: 90%;
+      margin: 30px auto 120px;
+      max-height: 60vh;
+      overflow-y: auto;
+      border: 3px solid var(--hud-border);
+      border-radius: 10px;
+      box-shadow: 0 0 20px var(--cyber-blue);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background-color: #000;
+      z-index: 10;
+      font-size: 16px;
+    }
+
+    th, td {
+      border: 1px solid var(--cyber-blue);
+      padding: 10px;
+      text-align: center;
+      color: #fff;
+    }
+
+    tbody tr {
+      position: relative;
+      overflow: hidden;
+      animation: glowRow 0.5s ease-in-out;
+    }
+
+    tbody tr:hover {
+      background-color: rgba(0, 255, 255, 0.15);
+    }
+
+    tbody tr::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      animation: scanline 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes scanline {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    @keyframes glowRow {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .gold td { background-color: gold; color: #000; }
+    .silver td { background-color: silver; color: #000; }
+    .bronze td { background-color: #cd7f32; color: #000; }
+    .normal td { background-color: rgba(255,255,255,0.05); }
+    .flag {
+      width: 24px;
+      vertical-align: middle;
+      margin-left: 6px;
+      border: 1px solid white;
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: rgba(0,0,0,0.9);
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      z-index: 999;
+    }
+
+    .controls button, .controls select {
+      position: relative;
+      color: var(--cyber-blue);
+      border: 2px solid var(--cyber-blue);
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .controls button::after {
+      content: "";
+      position: absolute;
+      width: 120%;
+      height: 120%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      border-radius: 50%;
+      transition: transform 0.3s ease-out;
+      pointer-events: none;
+    }
+
+    .controls button:active::after {
+      transform: translate(-50%, -50%) scale(1.5);
+    }
+
+    .controls button:hover {
+      background-color: var(--cyber-blue);
+      color: #000;
+      box-shadow: 0 0 12px var(--cyber-blue);
+    }
+  
+<style>
+  .highlight-col td:nth-child(var(--col-index)) {
+    background-color: rgba(0, 255, 255, 0.1);
+  }
+
+<style>
+  .fade-in {
+    animation: fadeInRow 0.5s ease-in-out;
+  }
+  .fade-out {
+    animation: fadeOutRow 0.4s forwards;
+  }
+  @keyframes fadeInRow {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeOutRow {
+    from { opacity: 1; height: auto; }
+    to   { opacity: 0; height: 0; transform: scaleY(0); }
+  }
+
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 5px;
+  transition: width 0.3s ease-in-out;
+}
+
+
+<style>
+  .toggle-view {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    border: 2px solid #0ff;
+    padding: 6px 14px;
+    font-weight: bold;
+    color: #0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  .toggle-view:hover {
+    color: #000;
+  }
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+    display: none;
+  }
+  .player-card {
+    border: 2px solid #0ff;
+    border-radius: 12px;
+    padding: 16px;
+    width: 220px;
+    color: #0ff;
+    box-shadow: 0 0 12px rgba(0,255,255,0.2);
+    font-family: 'Orbitron', sans-serif;
+  }
+  .player-card img.flag {
+    width: 36px;
+    height: 24px;
+    margin-bottom: 6px;
+    border: 1px solid #fff;
+  }
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 5px;
+  transition: width 0.3s ease-in-out;
+}
+
+
+<style>
+  .toggle-view {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    border: 2px solid #0ff;
+    padding: 6px 14px;
+    font-weight: bold;
+    color: #0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  .toggle-view:hover {
+    color: #000;
+  }
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+    display: none;
+  }
+  .player-card {
+    border: 2px solid #0ff;
+    border-radius: 12px;
+    padding: 16px;
+    width: 220px;
+    color: #0ff;
+    box-shadow: 0 0 12px rgba(0,255,255,0.2);
+    font-family: 'Orbitron', sans-serif;
+  }
+  .player-card img.flag {
+    width: 36px;
+    height: 24px;
+    margin-bottom: 6px;
+    border: 1px solid #fff;
+  }
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  .fade-in {
+    animation: fadeInRow 0.5s ease-in-out;
+  }
+  .fade-out {
+    animation: fadeOutRow 0.4s forwards;
+  }
+  @keyframes fadeInRow {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeOutRow {
+    from { opacity: 1; height: auto; }
+    to   { opacity: 0; height: 0; transform: scaleY(0); }
+  }
+
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 5px;
+  transition: width 0.3s ease-in-out;
+}
+
+
+<style>
+  .toggle-view {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    border: 2px solid #0ff;
+    padding: 6px 14px;
+    font-weight: bold;
+    color: #0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  .toggle-view:hover {
+    color: #000;
+  }
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+    display: none;
+  }
+  .player-card {
+    border: 2px solid #0ff;
+    border-radius: 12px;
+    padding: 16px;
+    width: 220px;
+    color: #0ff;
+    box-shadow: 0 0 12px rgba(0,255,255,0.2);
+    font-family: 'Orbitron', sans-serif;
+  }
+  .player-card img.flag {
+    width: 36px;
+    height: 24px;
+    margin-bottom: 6px;
+    border: 1px solid #fff;
+  }
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 5px;
+  transition: width 0.3s ease-in-out;
+}
+
+
+<style>
+  .toggle-view {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    border: 2px solid #0ff;
+    padding: 6px 14px;
+    font-weight: bold;
+    color: #0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  .toggle-view:hover {
+    color: #000;
+  }
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+    display: none;
+  }
+  .player-card {
+    border: 2px solid #0ff;
+    border-radius: 12px;
+    padding: 16px;
+    width: 220px;
+    color: #0ff;
+    box-shadow: 0 0 12px rgba(0,255,255,0.2);
+    font-family: 'Orbitron', sans-serif;
+  }
+  .player-card img.flag {
+    width: 36px;
+    height: 24px;
+    margin-bottom: 6px;
+    border: 1px solid #fff;
+  }
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+<style>
+.progress-bar {
+  background: linear-gradient(to right, #0f0, #ff0, #f00);
+    background: #000;
+    background: #0ff;
+    background: rgba(0,0,0,0.8);
+    background: repeating-linear-gradient(
+    background: repeating-linear-gradient(
+      background: url('background_cyberpunk.jpg') no-repeat center center fixed;
+      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.8);
+      background: linear-gradient(120deg, transparent, rgba(0,255,255,0.1), transparent);
+      background: transparent;
+      background: rgba(255,255,255,0.15);
+.progress-bar {
+  background: linear-gradient(to right, #0f0, #ff0, #f00);
+    background: #000;
+    background: #0ff;
+    background: rgba(0,0,0,0.8);
+    background: repeating-linear-gradient(
+    background: repeating-linear-gradient(
+.progress-bar {
+  background: linear-gradient(to right, #0f0, #ff0, #f00);
+    background: #000;
+    background: #0ff;
+    background: rgba(0,0,0,0.8);
+    background: repeating-linear-gradient(
+    background: repeating-linear-gradient(
+.progress-bar {
+  background: linear-gradient(to right, #0f0, #ff0, #f00);
+    background: #000;
+    background: #0ff;
+    background: rgba(0,0,0,0.8);
+    background: repeating-linear-gradient(
+    background: repeating-linear-gradient(
+.progress-bar {
+  background: linear-gradient(to right, #0f0, #ff0, #f00);
+    background: #000;
+    background: #0ff;
+    background: rgba(0,0,0,0.8);
+    background: repeating-linear-gradient(
+    background: repeating-linear-gradient(
+.progress-bar {
+  background: linear-gradient(to right, #0f0, #ff0, #f00);
+    background: #000;
+    background: #0ff;
+    background: rgba(0,0,0,0.8);
+    background: repeating-linear-gradient(
+    background: repeating-linear-gradient(
+.progress-bar {
+  background: linear-gradient(to right, #0f0, #ff0, #f00);
+    background: #000;
+    background: #0ff;
+    background: rgba(0,0,0,0.8);
+    background: repeating-linear-gradient(
+    background: repeating-linear-gradient(
+.progress-bar {
+  background: linear-gradient(to right, #0f0, #ff0, #f00);
+    background: #000;
+    background: #0ff;
+    background: rgba(0,0,0,0.8);
+    background: repeating-linear-gradient(
+    background: repeating-linear-gradient(
+.progress-bar {
+  background: linear-gradient(to right, #0f0, #ff0, #f00);
+    background: #000;
+    background: #0ff;
+    background: rgba(0,0,0,0.8);
+    background: repeating-linear-gradient(
+    background: repeating-linear-gradient(
+  <div class='progress-bar' style="width: ${100 - toSeconds(p.time || '') / 5}px"></div>
+</style>
+</head>
+<body>
+<div class="toggle-view" onclick="toggleView()">切换视图</div>
+
+<!-- 粒子背景容器 -->
+<div id="particles-js"></div>
+<style>
+  #particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    top: 0;
+    left: 0;
+  }
+
+<style>
+  .highlight-col td:nth-child(var(--col-index)) {
+    background-color: rgba(0, 255, 255, 0.1);
+  }
+
+<style>
+  .fade-in {
+    animation: fadeInRow 0.5s ease-in-out;
+  }
+  .fade-out {
+    animation: fadeOutRow 0.4s forwards;
+  }
+  @keyframes fadeInRow {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeOutRow {
+    from { opacity: 1; height: auto; }
+    to   { opacity: 0; height: 0; transform: scaleY(0); }
+  }
+
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 5px;
+  transition: width 0.3s ease-in-out;
+<style>
+</style>
+}
+
+
+<style>
+  .toggle-view {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    border: 2px solid #0ff;
+    padding: 6px 14px;
+    font-weight: bold;
+    color: #0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  .toggle-view:hover {
+    color: #000;
+  }
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+    display: none;
+  }
+  .player-card {
+    border: 2px solid #0ff;
+    border-radius: 12px;
+    padding: 16px;
+    width: 220px;
+    color: #0ff;
+    box-shadow: 0 0 12px rgba(0,255,255,0.2);
+    font-family: 'Orbitron', sans-serif;
+  }
+  .player-card img.flag {
+    width: 36px;
+    height: 24px;
+    margin-bottom: 6px;
+    border: 1px solid #fff;
+  }
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 5px;
+  transition: width 0.3s ease-in-out;
+}
+
+
+<style>
+  .toggle-view {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    border: 2px solid #0ff;
+    padding: 6px 14px;
+    font-weight: bold;
+    color: #0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  .toggle-view:hover {
+    color: #000;
+  }
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+    display: none;
+  }
+  .player-card {
+    border: 2px solid #0ff;
+    border-radius: 12px;
+    padding: 16px;
+    width: 220px;
+    color: #0ff;
+    box-shadow: 0 0 12px rgba(0,255,255,0.2);
+    font-family: 'Orbitron', sans-serif;
+  }
+  .player-card img.flag {
+    width: 36px;
+    height: 24px;
+    margin-bottom: 6px;
+    border: 1px solid #fff;
+  }
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  .fade-in {
+    animation: fadeInRow 0.5s ease-in-out;
+  }
+  .fade-out {
+    animation: fadeOutRow 0.4s forwards;
+  }
+  @keyframes fadeInRow {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeOutRow {
+    from { opacity: 1; height: auto; }
+    to   { opacity: 0; height: 0; transform: scaleY(0); }
+  }
+
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 5px;
+  transition: width 0.3s ease-in-out;
+}
+
+
+<style>
+  .toggle-view {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    border: 2px solid #0ff;
+    padding: 6px 14px;
+    font-weight: bold;
+    color: #0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  .toggle-view:hover {
+    color: #000;
+  }
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+    display: none;
+  }
+  .player-card {
+    border: 2px solid #0ff;
+    border-radius: 12px;
+    padding: 16px;
+    width: 220px;
+    color: #0ff;
+    box-shadow: 0 0 12px rgba(0,255,255,0.2);
+    font-family: 'Orbitron', sans-serif;
+  }
+  .player-card img.flag {
+    width: 36px;
+    height: 24px;
+    margin-bottom: 6px;
+    border: 1px solid #fff;
+  }
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 5px;
+  transition: width 0.3s ease-in-out;
+}
+
+
+<style>
+  .toggle-view {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    border: 2px solid #0ff;
+    padding: 6px 14px;
+    font-weight: bold;
+    color: #0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  .toggle-view:hover {
+    color: #000;
+  }
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+    display: none;
+  }
+  .player-card {
+    border: 2px solid #0ff;
+    border-radius: 12px;
+    padding: 16px;
+    width: 220px;
+    color: #0ff;
+    box-shadow: 0 0 12px rgba(0,255,255,0.2);
+    font-family: 'Orbitron', sans-serif;
+  }
+  .player-card img.flag {
+    width: 36px;
+    height: 24px;
+    margin-bottom: 6px;
+    border: 1px solid #fff;
+  }
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  .hud-header-line {
+    position: relative;
+  }
+  .hud-header-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+      to right,
+      #0ff,
+      #0ff 2px,
+      transparent 2px,
+      transparent 8px
+    );
+    animation: pulse-line 1.5s infinite linear;
+  }
+  @keyframes pulse-line {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+  }
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+
+
+<style>
+  td[contenteditable]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0,255,255,0.1);
+    color: #0ff;
+    padding: 6px 10px;
+    border: 1px solid #0ff;
+    font-size: 12px;
+    border-radius: 6px;
+    top: -30px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+  particlesJS("particles-js", {
+    particles: {
+      number: { value: 60, density: { enable: true, value_area: 800 } },
+      color: { value: "#00ffff" },
+      shape: { type: "circle" },
+      opacity: { value: 0.3 },
+      size: { value: 2 },
+      line_linked: { enable: true, distance: 120, color: "#00ffff", opacity: 0.3, width: 1 },
+      move: { enable: true, speed: 1 }
+    },
+    interactivity: {
+      detect_on: "canvas",
+      events: {
+        onhover: { enable: true, mode: "grab" },
+        onclick: { enable: false }
+      },
+      modes: {
+        grab: { distance: 140, line_linked: { opacity: 0.4 } }
+      }
+    },
+    retina_detect: true
+  });
+</script>
+
+  <header>
+    <h1 id="typing-title"></h1>
+    <h2>CPU Competition Leaderboard</h2>
+  </header>
+
+  <div class="card-container" id="card-view"></div>
+<div class="table-container">
+    <table>
+      <thead class="hud-header-line">
+        <tr><th>Rank</th><th>Nation</th><th>Name</th><th>ID</th><th>Time</th></tr>
+      </thead>
+      <tbody id="ranking-body"></tbody>
+    </table>
+  </div>
+
+  <div class="controls">
+    <select id="lang-select" onchange="switchLang()">
+      <option value="zh">中文</option>
+      <option value="en">English</option>
+    </select>
+    <button onclick="addRow()">添加选手</button>
+    <button onclick="clearTable()">清空</button>
+    <button onclick="sortTable()">排序</button>
+    <button onclick="downloadCSV()">导出 CSV</button>
+    <button onclick="backupData()">备份数据</button>
+    <input type="file" id="fileInput" style="display:none" onchange="importData(event)">
+    <button onclick="document.getElementById('fileInput').click()">导入备份</button>
+    <button onclick="exportPDF()">导出 PDF</button>
+  </div>
+
+  <script>
+    const countries = [["CHN","中国"],["IND","印度"],["THA","泰国"],["MYS","马来西亚"],["BGD","孟加拉国"],["PAK","巴基斯坦"],["IDN","印度尼西亚"],["ARE","阿联酋"],["RUS","俄罗斯"],["LAO","老挝"],["TZA","坦桑尼亚"],["DZA","阿尔及利亚"],["GIN","几内亚"],["CUB","古巴"],["BRA","巴西"],["SDN","苏丹"],["KAZ","哈萨克斯坦"],["UZB","乌兹别克斯坦"],["GRC","希腊"],["VNM","越南"]];
+    let data = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+
+    function save() {
+      localStorage.setItem('leaderboard', JSON.stringify(data));
+    }
+
+    function toSeconds(t) {
+      const [m, s] = (t || "0:00").split(":").map(Number);
+      return m * 60 + s;
+    }
+
+    function validateTime(cell, i) {
+      setTimeout(() => {
+        const val = cell.textContent.trim();
+        if (!/^\d{1,2}:\d{2}$/.test(val)) {
+          alert("时间格式不正确，应为 分:秒");
+          cell.textContent = '';
+        } else {
+          data[i].time = val;
+          save();
+        }
+      }, 0);
+    }
+
+    function render() {
+      const tbody = document.getElementById("ranking-body");
+      tbody.innerHTML = "";
+      data.forEach((p, i) => {
+        const row = document.createElement("tr");
+        row.classList.add("fade-in");
+        row.className = i==0 ? "gold" : i==1 ? "silver" : i==2 ? "bronze" : "normal";
+        row.innerHTML = `
+          <td>${i + 1}</td>
+          <td>
+            <select onchange="data[${i}].nation=this.value; save(); render()">
+              <option value="">--</option>
+              ${countries.map(([code, name]) =>
+                `<option value="${code}" ${p.nation===code?"selected":""}>${name} (${code})</option>`).join("")}
+            </select>
+            <img src="flags/${p.nation || 'CHN'}.png" class="flag">
+          </td>
+          <td contenteditable data-tooltip="点击编辑姓名" oninput="data[${i}].name=this.textContent; save()">${p.name||''}</td>
+          <td contenteditable data-tooltip="点击输入编号 (如 A01)" oninput="data[${i}].id=this.textContent; save()">${p.id||''}</td>
+          
+<td contenteditable data-tooltip="格式应为 分:秒 (如 2:30)" onblur="validateTime(this, ${i})">${p.time||''}
+</td>
+
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function addRow() {
+      data.push({ nation: "", name: "", id: "", time: "" });
+      render();
+renderCards();
+      highlightColumn(5);
+      save();
+    }
+
+    function clearTable() {
+      if (confirm("确定清空所有数据？")) {
+        data = [];
+        render();
+renderCards();
+        save();
+      }
+    }
+
+    function sortTable() {
+      data.sort((a, b) => toSeconds(a.time) - toSeconds(b.time));
+      render();
+renderCards();
+      highlightColumn(5);
+      save();
+    }
+
+    function downloadCSV() {
+      const csv = [["Rank","Nation","Name","ID","Time"], ...data.map((p,i)=>[i+1,p.nation,p.name,p.id,p.time])]
+        .map(row => row.join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "ranking.csv";
+      link.click();
+    }
+
+    function backupData() {
+      const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "backup.json";
+      a.click();
+    }
+
+    function importData(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = event => {
+        try {
+          const parsed = JSON.parse(event.target.result);
+          if (!Array.isArray(parsed)) throw "无效数据格式";
+          data = parsed;
+          save();
+          render();
+renderCards();
+        } catch {
+          alert("导入失败，文件格式有误！");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function exportPDF() {
+      const opt = {
+        margin: 0.2,
+        filename: 'YCS_Leaderboard.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(document.body).save();
+    }
+
+    
+let currentSortCol = 5; // 默认“Time”为第5列（1-based）
+
+function highlightColumn(index) {
+  document.documentElement.style.setProperty('--col-index', index);
+  document.querySelectorAll("tbody tr").forEach(row => {
+    row.classList.add("highlight-col");
+  });
+}
+
+function switchLang() {}
+
+    render();
+renderCards();
+  </script>
+
+<script>
+  const titleText = "YCS World Cup";
+  let idx = 0;
+  const el = document.getElementById("typing-title");
+  function type() {
+    if (idx <= titleText.length) {
+      el.innerHTML = titleText.slice(0, idx++) + "<span style='opacity:0.6'>|</span>";
+      setTimeout(type, 120);
+    } else {
+      el.innerHTML = titleText; // 移除光标
+    }
+  }
+  type();
+</script>
+
+
+<script>
+let tableView = true;
+function toggleView() {
+  tableView = !tableView;
+  document.querySelector(".table-container").style.display = tableView ? "block" : "none";
+  document.getElementById("card-view").style.display = tableView ? "none" : "flex";
+}
+
+function renderCards() {
+  const container = document.getElementById("card-view");
+  container.innerHTML = '';
+  data.forEach((p, i) => {
+    const card = document.createElement("div");
+    card.className = "player-card";
+    card.innerHTML = `
+      <div><strong>Rank:</strong> ${i + 1}</div>
+      <div><img src="flags/${p.nation || 'CHN'}.png" class="flag"> ${p.nation}</div>
+      <div><strong>Name:</strong> ${p.name || ''}</div>
+      <div><strong>ID:</strong> ${p.id || ''}</div>
+      <div><strong>Time:</strong> ${p.time || ''}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+</script>
+
+</body>
+</html>
